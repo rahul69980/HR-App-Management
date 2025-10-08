@@ -1,21 +1,40 @@
 version: '3.8'
-services:
-  mongo:
-    image: mongo
-    container_name: mongo
-    ports:
-      - "27017:27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: rootuser
-      MONGO_INITDB_ROOT_PASSWORD: rootpassword
 
-  app:
-    build: .
+services:
+
+  mongo:
+
+    image: mongo:6.0
+
+    container_name: hrapp-mongo
+
     ports:
+
+      - "27017:27017"
+
+    volumes:
+
+      - mongo-data:/data/db
+
+  backend:
+
+    build: .
+
+    container_name: hrapp-backend
+
+    ports:
+
       - "3000:3000"
-    env_file:
-      - .env
-    depends_on:
-      - mongo
+
     environment:
-      MONGO_URI: mongodb://rootuser:rootpassword@mongo:27017/hr_system?authSource=rootuser
+
+      - MONGO_URI=mongodb://mongo:27017/hrapp
+
+    depends_on:
+
+      - mongo
+
+volumes:
+
+  mongo-data:
+ 
